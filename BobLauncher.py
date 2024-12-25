@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import webbrowser
+import re
 
 class Config:
     WINDOW_TITLE = "LoL統計ランチャー"
@@ -108,7 +109,8 @@ class ChampionSearchApp:
         if not self.filtered_list:
             return
 
-        champion = self.filtered_list[self.current_index].lower()
+        # アルファベット以外の文字を除外
+        champion = re.sub(r"[^a-zA-Z]", "", self.filtered_list[self.current_index]).lower()
         webbrowser.open(url.replace("{q}", champion))
 
     def _focus_textbox(self, _):
