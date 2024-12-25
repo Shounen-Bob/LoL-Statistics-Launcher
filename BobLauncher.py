@@ -23,6 +23,7 @@ class ChampionSearchApp:
         self.filtered_list = self.champion_list
         self.current_index = 0  # 現在の選択インデックスを追跡
         self._setup_widgets()
+        self._filter_list(None)  # ここで最初のリスト表示を呼び出す
         self.root.bind("<FocusIn>", self._focus_textbox)
 
     def _load_list(self, file_path):
@@ -74,6 +75,7 @@ class ChampionSearchApp:
         listbox.bind("<Down>", lambda _: self._move_selection(1))
         listbox.bind("<Return>", lambda _: self._search(Config.BUTTONS[0][1]))
         listbox.bind("<Shift-Return>", lambda _: self._search(Config.BUTTONS[1][1]))
+        listbox.bind("<<ListboxSelect>>", self._update_current_index)
         return listbox
 
     def _create_buttons(self):
@@ -104,6 +106,11 @@ class ChampionSearchApp:
         self.listbox.select_clear(0, tk.END)
         self.listbox.select_set(self.current_index)
         self.listbox.see(self.current_index)
+
+    def _update_current_index(self, event):
+        selection = self.listbox.curselection()
+        if selection:
+            self.current_index = selection[0]
 
     def _search(self, url):
         if not self.filtered_list:
